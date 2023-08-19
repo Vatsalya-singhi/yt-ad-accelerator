@@ -1,0 +1,36 @@
+{
+    "name": "yt-ad-accelerator",
+    "short_name": "YT ad accelerator",
+    "description": "Learning all about Chrome Extensions",
+    "version": "1.0.0",
+    "author": "vatsalya.singhi@gmail.com",
+    "manifest_version": 3,
+    "action": {
+        "default_title": "YT ad accelerator",
+        "default_popup": "./src/index.html",
+        "default_locale": "en"
+    },
+    "icons": {
+        "16": "./icons/icon16.jpeg",
+        "32": "./icons/icon32.jpeg",
+        "48": "./icons/icon48.jpeg",
+        "128": "./icons/icon128.jpeg"
+    },
+    "background": {
+        "service_worker": "./src/background.js",
+        "type": "module"
+    },
+    "permissions": [
+        "storage",
+        "activeTab",
+        "scripting",
+        "tabs",
+        "storage"
+    ],
+    "host_permissions": [
+        "http://*/*",
+        "https://*/*",
+        "http://www.youtube.com/*",
+        "https://www.youtube.com/*"
+    ]
+}
