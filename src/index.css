@@ -1,0 +1,45 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+html {
+    background-color: #fcfcfc;
+}
+
+html,
+body,
+h2 {
+    margin: 0;
+}
+
+html,
+body {
+    padding: 0;
+}
+
+body {
+    overflow-x: hidden;
+    width: 340px;
+    color: #585858;
+    font-size: 13px;
+}
+
+body {
+    width: 300px;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+h2 {
+    margin-top: 0;
+}
+
+p {
+    margin-bottom: 10px;
+}
