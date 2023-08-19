@@ -57,13 +57,13 @@ function main() {
     var e = document.getElementById('movie_player');
     if (!e) return;
 
-    var observer = new MutationObserver((event) => {
-        console.log('change detected');
-        const flag1 = skipBtnClick();
-        const flag2 = adVideoManipulation();
-    })
-
     try {
+        var observer = new MutationObserver((event) => {
+            console.log('change detected');
+            const flag1 = skipBtnClick();
+            const flag2 = adVideoManipulation();
+        })
+
         observer.observe(e, {
             attributes: true,
             attributeFilter: ['class'],
