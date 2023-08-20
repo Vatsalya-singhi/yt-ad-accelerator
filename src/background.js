@@ -1,11 +1,11 @@
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 
-    if (changeInfo.status === 'complete' && tab.url.includes("https://www.youtube.com/")) {
+    if (changeInfo.status === 'complete' && tab.url.includes("https://www.youtube.com/watch")) {
         chrome.scripting.executeScript({
-            target: { tabId: tabId }, // ,allFrames: true
+            target: { tabId: tabId },
             files: ["./src/content.js"],
         }).then(async () => {
-            console.log("INJECTED THE FOREGROUND SCRIPT.");
+            console.info("INJECTED THE FOREGROUND SCRIPT.");
         })
     }
 

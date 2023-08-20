@@ -24,7 +24,7 @@ function skipBtnClick() {
             return true;
         }
     } catch (err) {
-        console.log(err);
+        console.error(err);
     }
     return false;
 }
@@ -46,7 +46,7 @@ function adVideoManipulation() {
         console.info("ad video manipulation successful");
         return true;
     } catch (err) {
-        console.log(err);
+        console.error(err);
     }
     return false;
 }
@@ -58,10 +58,8 @@ function main() {
     try {
         var observer = new MutationObserver((mutation) => {
             let count = 0;
-            const flag1 = skipBtnClick();
-            const flag2 = adVideoManipulation();
-            if (flag1) count++;
-            if (flag2) count++;
+            if (skipBtnClick()) count++;
+            if (adVideoManipulation()) count++;
         })
         observer.observe(e, {
             subtree: false, // default
@@ -76,4 +74,4 @@ function main() {
 // after content load
 setTimeout(() => {
     main();
-}, 1000)
+}, 1000);
