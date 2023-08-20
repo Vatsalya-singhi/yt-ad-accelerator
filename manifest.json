@@ -1,7 +1,7 @@
 {
     "name": "yt-ad-accelerator",
     "short_name": "YT ad accelerator",
-    "description": "The YouTube Ad Accelerator is a Chrome extension that improves your YouTube viewing by automating ad skipping, muting, and playback acceleration without ad blocking.",
+    "description": "The chrome tool improves your YouTube viewing by automating ad skipping, muting & playback acceleration without blocking ad.",
     "version": "1.0.0",
     "author": "vatsalya.singhi@gmail.com",
     "manifest_version": 3,
@@ -23,23 +23,14 @@
         "128": "./icons/icon128.jpeg"
     },
     "background": {
-        "service_worker": "./src/background.js",
-        "type": "module"
+        "service_worker": "./src/background.js"
     },
     "permissions": [
-        "storage",
-        "activeTab",
         "scripting",
-        "tabs",
-        "storage"
+        "tabs"
     ],
     "host_permissions": [
-        "http://*/*",
-        "https://*/*",
         "http://www.youtube.com/*",
         "https://www.youtube.com/*"
-    ],
-    "content_security_policy": {
-        "extension_pages": "default-src 'self' "
-    }
+    ]
 }
