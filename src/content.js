@@ -53,22 +53,22 @@ function adVideoManipulation() {
 
 // MAIN FUNCTION
 function main() {
-
     var e = document.getElementById('movie_player');
     if (!e) return;
-
     try {
-        var observer = new MutationObserver((event) => {
-            console.log('change detected');
+        var observer = new MutationObserver((mutation) => {
+            let count = 0;
             const flag1 = skipBtnClick();
             const flag2 = adVideoManipulation();
+            if (flag1) count++;
+            if (flag2) count++;
         })
-
         observer.observe(e, {
-            attributes: true,
-            attributeFilter: ['class'],
-            childList: false,
-            characterData: false
+            subtree: false, // default
+            childList: false, // default
+            attributes: true, // monitor select element attribute only 
+            attributeFilter: ['class'], // specific attribute to monitor
+            characterData: false // default
         })
     } catch (err) { }
 }
