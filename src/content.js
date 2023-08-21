@@ -3,7 +3,6 @@
  * FOR CREATIVE USE ONLY
 */
 
-
 // SKIP BTN FUNCTION
 function skipBtnClick() {
     try {
@@ -33,7 +32,6 @@ function skipBtnClick() {
 function adVideoManipulation() {
     try {
         const getElementByXpath = (path) => document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-        // "ad-created ad-showing ad-interrupting"
         const elementXPath = '//*[@id="movie_player" and contains(@class, "ad-showing")]/div[1]/video';
         const adElement = getElementByXpath(elementXPath);
         // no ads found
@@ -53,10 +51,10 @@ function adVideoManipulation() {
 
 // MAIN FUNCTION
 function main() {
-    var e = document.getElementById('movie_player');
+    const e = document.getElementById('movie_player');
     if (!e) return;
     try {
-        var observer = new MutationObserver((mutation) => {
+        const observer = new MutationObserver((mutation) => {
             let count = 0;
             if (skipBtnClick()) count++;
             if (adVideoManipulation()) count++;
@@ -74,4 +72,4 @@ function main() {
 // after content load
 setTimeout(() => {
     main();
-}, 1000);
+});
