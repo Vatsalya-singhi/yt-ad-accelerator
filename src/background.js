@@ -1,6 +1,8 @@
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 
-    if (changeInfo.status === 'complete' && tab.url.includes("https://www.youtube.com/watch")) {
+    const condition1 = changeInfo.status === 'complete';
+    const condition2 = tab.url.includes("https://www.youtube.com/watch");
+    if (condition1 && condition2) {
         chrome.scripting.executeScript({
             target: { tabId: tabId },
             files: ["./src/content.js"],
