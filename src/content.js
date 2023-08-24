@@ -6,7 +6,7 @@
 // SKIP BTN FUNCTION
 function skipBtnClick() {
     try {
-        const skipBtnXPath = '//*[@id="skip-button:m"]/span/button';
+        const skipBtnXPath = '//span[@class="ytp-ad-skip-button-container"]/button';
         const getElementByXpath = (path) => document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
         const skipBtn1 = getElementByXpath(skipBtnXPath);
         if (skipBtn1) {
@@ -15,15 +15,18 @@ function skipBtnClick() {
             return true;
         }
 
-        const skipBtnClassName = "ytp-ad-skip-button-modern ytp-button";
-        const skipBtnList = document.getElementsByClassName(skipBtnClassName);
-        if (skipBtnList?.length > 0) {
-            skipBtnList[0].click();
+        const skipBtnList = [];
+        const targetClassNames = ["ytp-ad-skip-button-modern ytp-button", "ytp-ad-skip-button ytp-button", "ytp-ad-skip-button-container"];
+        targetClassNames.forEach((classNames) => {
+            skipBtnList.push(...document.getElementsByClassName(classNames));
+        });
+        if (skipBtnList.length !== 0) {
+            skipBtnList.forEach(btn => btn?.click());
             console.info('skip button click by ClassName successful');
             return true;
         }
     } catch (err) {
-        console.error(err);
+        console.error("skip btn click error=>", err);
     }
     return false;
 }
@@ -44,7 +47,7 @@ function adVideoManipulation() {
         console.info("ad video manipulation successful");
         return true;
     } catch (err) {
-        console.error(err);
+        console.error("ad manipulation error=>", err);
     }
     return false;
 }
@@ -57,9 +60,6 @@ function main() {
         const observer = new MutationObserver((mutation) => {
             skipBtnClick();
             adVideoManipulation();
-            setTimeout(() => {
-                skipBtnClick();
-            }, 1000);
         })
         observer.observe(e, {
             subtree: false, // default
