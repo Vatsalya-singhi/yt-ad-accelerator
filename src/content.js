@@ -55,9 +55,11 @@ function main() {
     if (!e) return;
     try {
         const observer = new MutationObserver((mutation) => {
-            let count = 0;
-            if (skipBtnClick()) count++;
-            if (adVideoManipulation()) count++;
+            skipBtnClick();
+            adVideoManipulation();
+            setTimeout(() => {
+                skipBtnClick();
+            }, 1000);
         })
         observer.observe(e, {
             subtree: false, // default
