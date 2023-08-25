@@ -1,12 +1,12 @@
 {
-    "name": "yt-ad-accelerator",
-    "short_name": "YT ad accelerator",
+    "name": "YouTube Ad Accelerator",
+    "short_name": "YouTube Ad Accelerator",
     "description": "The chrome tool improves your YouTube viewing by automating ad skipping, muting & playback acceleration without blocking ad.",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "author": "vatsalya.singhi@gmail.com",
     "manifest_version": 3,
     "action": {
-        "default_title": "YT ad accelerator",
+        "default_title": "YouTube Ad Accelerator",
         "default_popup": "./src/index.html",
         "default_locale": "en",
         "default_icon": {
