@@ -1,7 +1,7 @@
 var tabList = [];
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    const condition1 = changeInfo.status === 'complete';
+    const condition1 = true; // changeInfo.status === 'complete';
     const condition2 = tab.url.includes("https://www.youtube.com/watch");
 
 
