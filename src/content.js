@@ -10,6 +10,9 @@ function main() {
     const e = document.getElementById('movie_player');
     if (!e) return null;
     try {
+        // Function to check the initial state of a class on an element
+        adVideoManipulation();
+        // Create an observer instance
         const observer = new MutationObserver((mutation) => {
             skipBtnClick();
             adVideoManipulation();
