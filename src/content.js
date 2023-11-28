@@ -1,4 +1,12 @@
 setTimeout(() => {
+    try {
+        // Function to check the initial state of a class on an element
+        adVideoManipulation();
+        skipBtnClick();
+    } catch (err) { }
+}, 1000)
+
+setTimeout(() => {
     main();
 })
 
@@ -26,7 +34,7 @@ function main() {
         // Function to check the initial state of a class on an element
         adVideoManipulation();
         skipBtnClick();
-        
+
         return observer;
     } catch (err) {
         return null;
