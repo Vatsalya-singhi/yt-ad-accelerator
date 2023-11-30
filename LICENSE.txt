@@ -32,7 +32,7 @@ This Educational Use Only License (EUOL) is a legal agreement between you (the "
    - For inquiries regarding commercial or non-educational use, please contact Vatsalya Singhi at vatsalya.singhi@gmail.com.
 
 10. **Governing Law:**
-    - This license shall be governed by and construed in accordance with the laws of [Your Jurisdiction].
+    - This license shall be governed by and construed in accordance with the laws of India.
 
 This license is subject to change. It is your responsibility to check for updates.
 
