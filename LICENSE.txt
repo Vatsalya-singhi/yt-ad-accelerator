@@ -1,0 +1,40 @@
+Educational Use Only License (EUOL)
+
+Version 1.0, 2023-11-30
+
+This Educational Use Only License (EUOL) is a legal agreement between you (the "Licensee") and Vatsalya Singhi (the "Licensor"). By using, copying, modifying, or distributing this software and its source code, you agree to the terms and conditions of this license.
+
+1. **Grant of License:**
+   - The Licensor hereby grants the Licensee a limited, non-exclusive, non-transferable license to use, copy, modify, and distribute the software and its source code for educational purposes only.
+
+2. **Restrictions:**
+   - The Licensee may not use, copy, modify, merge, publish, distribute, sublicense, or sell copies of the software or its source code for any purpose other than educational use without obtaining explicit written permission from the Licensor.
+
+3. **No Warranty:**
+   - The software is provided "as is," without warranty of any kind, express or implied. The Licensor makes no representations or warranties regarding the use, results, or performance of the software.
+
+4. **Limitation of Liability:**
+   - In no event shall the Licensor be liable for any special, incidental, indirect, or consequential damages arising out of the use or inability to use the software, even if the Licensor has been advised of the possibility of such damages.
+
+5. **Attribution:**
+   - When sharing or distributing the software or its modifications, the Licensee must provide clear and appropriate attribution to the original author.
+
+6. **Educational Purpose Definition:**
+   - For the purpose of this license, "educational purposes" include teaching, learning, and academic research. Any other use requires explicit written permission from the Licensor.
+
+7. **Legal Disclaimer:**
+   - This software and its source code are provided for educational purposes only. The Licensor disclaims all liability for any use of the software that is not in accordance with the terms of this license.
+
+8. **Termination:**
+   - The license is effective until terminated by the Licensee or the Licensor. The Licensee may terminate the license at any time by destroying all copies of the software and its source code.
+
+9. **Contact:**
+   - For inquiries regarding commercial or non-educational use, please contact Vatsalya Singhi at vatsalya.singhi@gmail.com.
+
+10. **Governing Law:**
+    - This license shall be governed by and construed in accordance with the laws of [Your Jurisdiction].
+
+This license is subject to change. It is your responsibility to check for updates.
+
+Vatsalya Singhi
+vatsalya.singhi@gmail.com
