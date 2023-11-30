@@ -1,6 +1,6 @@
 # YouTube Ad Accelerator Chrome Extension
 
-![Extension Logo](./icons/icon128.jpeg)
+![Extension Logo](./icons/icon128.png)
 
 ## Table of Contents
 
