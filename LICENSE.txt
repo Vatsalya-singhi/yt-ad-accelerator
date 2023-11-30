@@ -1,6 +1,6 @@
 Educational Use Only License (EUOL)
 
-Version 1.0, 2023-11-30
+Version 1.0, 2023-08-27
 
 This Educational Use Only License (EUOL) is a legal agreement between you (the "Licensee") and Vatsalya Singhi (the "Licensor"). By using, copying, modifying, or distributing this software and its source code, you agree to the terms and conditions of this license.
 
