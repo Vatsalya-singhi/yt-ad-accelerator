@@ -52,20 +52,26 @@ function skipBtnClick() {
         const skipBtn1 = getElementByXpath(skipBtnXPath);
         if (skipBtn1) {
             skipBtn1.click();
-            // console.info('skip button click by XPath successful');
+            console.info('skip button click by XPath successful');
             return true;
         }
 
         const skipBtnList = [];
-        const targetClassNames = ["ytp-ad-skip-button-modern ytp-button", "ytp-ad-skip-button ytp-button", "ytp-ad-skip-button-container"];
+        const targetClassNames = ["ytp-ad-skip-button-modern", "ytp-ad-skip-button", "ytp-ad-skip-button-modern ytp-button", "ytp-ad-skip-button ytp-button", "ytp-ad-skip-button-container", "ytp-skip-ad-button"];
         targetClassNames.forEach((classNames) => {
             skipBtnList.push(...document.getElementsByClassName(classNames));
         });
+
+        skipBtnList.push(document.querySelector('[id^="skip-button"]'));
+
         if (skipBtnList.length !== 0) {
             skipBtnList.forEach(btn => btn?.click());
-            // console.info('skip button click by ClassName successful');
+            console.info('skip button click by ClassName/ID successful');
             return true;
         }
+
+
+
     } catch (err) {
         console.error("skip btn click error=>", err);
     }
