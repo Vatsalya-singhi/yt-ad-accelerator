@@ -37,8 +37,7 @@
     ],
     "permissions": [
         "scripting",
-        "tabs",
-        "storage"
+        "tabs"
     ],
     "host_permissions": [
         "http://www.youtube.com/watch*",
