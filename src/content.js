@@ -8,6 +8,8 @@
             // Function to check the initial state of a class on an element
             adVideoManipulation();
             skipBtnClick();
+            // add enforcement listener to close the popup
+            enforcementListener();
         } catch (err) { }
     }, 1000)
 
@@ -49,7 +51,8 @@
     }
 
     function enforcementListener() {
-        const xpath = '/html/body/ytd-app/ytd-popup-container/tp-yt-paper-dialog';
+        // const xpath = '/html/body/ytd-app/ytd-popup-container/tp-yt-paper-dialog';
+        const xpath = '/html/body/ytd-app/ytd-popup-container';
         const e = getElementByXpath(xpath);
         if (!e) {
             console.info('enforcementListener failed');
@@ -62,11 +65,11 @@
                 closeEnforcementMessage();
             })
             observer2.observe(e, {
-                subtree: false, // default
-                childList: false, // default
+                subtree: true, // default
+                childList: true, // default
                 attributes: true, // monitor select element attribute only 
                 attributeFilter: ['class', 'style'], // specific attribute to monitor
-                characterData: false // default
+                characterData: true // default
             })
             // Function to check the initial state of a class on an element
             closeEnforcementMessage();

@@ -2,7 +2,7 @@
     "name": "YouTube Ad Accelerator",
     "short_name": "YouTube Ad Accelerator",
     "description": "The chrome tool improves your YouTube viewing by automating ad skipping, muting & playback acceleration without blocking ad.",
-    "version": "4.1.0",
+    "version": "4.1.1",
     "author": "vatsalya.singhi@gmail.com",
     "manifest_version": 3,
     "action": {
