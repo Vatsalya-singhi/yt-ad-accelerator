@@ -64,9 +64,10 @@
             observer2 = new MutationObserver((mutation) => {
                 closeEnforcementMessage();
             })
+            console.info('enforcementListener added');
             observer2.observe(e, {
-                subtree: true, // default
-                childList: true, // default
+                subtree: true,
+                childList: true,
                 attributes: true, // monitor select element attribute only 
                 attributeFilter: ['class', 'style'], // specific attribute to monitor
                 characterData: true // default
@@ -124,7 +125,7 @@
     function closeEnforcementMessage() {
         try {
             // then check for close button and auto click
-            const elementXPath = '//*[@id="container" and contains(@class, "ytd-enforcement-message-view-model")]//*[@id="header" and contains(@class, "ytd-enforcement-message-view-model")]//*[@id="dismiss-button" and contains(@class, "ytd-enforcement-message-view-model")]';
+            const elementXPath = '//*[@id="container" and contains(@class, "ytd-enforcement-message-view-model")]//*[@id="header" and contains(@class, "ytd-enforcement-message-view-model")]//*[@id="dismiss-button" and contains(@class, "ytd-enforcement-message-view-model")]/button-view-model/button';
             const adElement = getElementByXpath(elementXPath);
             if (adElement) {
                 adElement.click();
