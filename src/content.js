@@ -1,18 +1,21 @@
 (() => {
-    var observer = null;
-    var observer2 = null;
-    var adSkipCount = 0;
+    let observer = null;
+    let observer2 = null;
+    let adSkipCount = 0;
 
+    // Initial setup and check
+    
     setTimeout(() => {
         try {
-            // Function to check the initial state of a class on an element
             adVideoManipulation();
             skipBtnClick();
-            // add enforcement listener to close the popup
             enforcementListener();
-        } catch (err) { }
-    }, 1000)
+        } catch (err) {
+            console.error(err);
+        }
+    }, 1000);
 
+    // Ensure observers are set up after initial delay
     setTimeout(() => {
         if (!observer) {
             main();
@@ -20,38 +23,35 @@
         if (!observer2) {
             enforcementListener();
         }
-    })
+    }, 1000);
 
     /**
      * MAIN FUNCTIONS
-    */
+     */
 
     function main() {
         const e = document.getElementById('movie_player');
-        if (!e) { return; }
+        if (!e) return;
 
         try {
             // Create an observer instance
-            observer = new MutationObserver((mutation) => {
+            observer = new MutationObserver((mutations) => {
                 skipBtnClick();
                 adVideoManipulation();
-            })
+            });
             observer.observe(e, {
-                subtree: false, // default
-                childList: false, // default
-                attributes: true, // monitor select element attribute only 
-                attributeFilter: ['class'], // specific attribute to monitor
-                characterData: false // default
-            })
+                attributes: true,
+                attributeFilter: ['class'],
+            });
 
-            // Function to check the initial state of a class on an element
             adVideoManipulation();
             skipBtnClick();
-        } catch (err) { }
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     function enforcementListener() {
-        // const xpath = '/html/body/ytd-app/ytd-popup-container';
         const xpath = '/html/body/ytd-app';
         const e = getElementByXpath(xpath);
         if (!e) {
@@ -60,30 +60,29 @@
         }
 
         try {
-            // Create an observer instance
-            observer2 = new MutationObserver((mutation) => {
+            observer2 = new MutationObserver((mutations) => {
                 closeEnforcementMessage();
-            })
-            console.info('enforcementListener added');
+            });
             observer2.observe(e, {
                 subtree: true,
                 childList: true,
-                attributes: true, // monitor select element attribute only 
-                attributeFilter: ['class', 'style'], // specific attribute to monitor
-                characterData: true // default
-            })
-            // Function to check the initial state of a class on an element
+                attributes: true,
+                attributeFilter: ['class', 'style'],
+                characterData: true,
+            });
+
             closeEnforcementMessage();
-        } catch (err) { }
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     /**
      * HELPER FUNCTIONS
-    */
+     */
 
     const getElementByXpath = (path) => document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
 
-    // click on skip btn
     function skipBtnClick() {
         try {
             const skipBtn1 = getElementByXpath('//span[@class="ytp-ad-skip-button-container"]/button');
@@ -93,48 +92,57 @@
                 incrementAdSkipCount();
             }
             const skipBtnList = [];
-            const targetClassNames = ["ytp-ad-skip-button-modern", "ytp-ad-skip-button", "ytp-ad-skip-button-modern ytp-button", "ytp-ad-skip-button ytp-button", "ytp-ad-skip-button-container", "ytp-skip-ad-button"];
-            targetClassNames.forEach((classNames) => {
-                skipBtnList.push(...document.getElementsByClassName(classNames));
+            const targetClassNames = [
+                "ytp-ad-skip-button-modern",
+                "ytp-ad-skip-button",
+                "ytp-ad-skip-button-modern ytp-button",
+                "ytp-ad-skip-button ytp-button",
+                "ytp-ad-skip-button-container",
+                "ytp-skip-ad-button"
+            ];
+            targetClassNames.forEach((className) => {
+                skipBtnList.push(...document.getElementsByClassName(className));
             });
             skipBtnList.push(document.querySelector('[id^="skip-button"]'));
             skipBtnList.forEach((btn) => {
-                if (btn?.click()) {
+                if (btn) {
+                    btn.click();
                     console.info('skip button click by ClassName/ID successful');
                     incrementAdSkipCount();
                 }
             });
-        } catch (err) { }
+        } catch (err) {
+            console.error(err);
+        }
     }
 
-    // mute and accerate adverts
     function adVideoManipulation() {
         try {
             const adElement = getElementByXpath('//*[@id="movie_player" and contains(@class, "ad-showing")]/div[1]/video');
             if (adElement) {
-                // set params
                 adElement.volume = 0;
                 adElement.muted = true;
-                adElement.playbackRate = 16; // max video playback speed
+                adElement.playbackRate = 16;
                 incrementAdSkipCount();
             }
-        } catch (err) { }
+        } catch (err) {
+            console.error(err);
+        }
     }
 
-    // click on close enforcement button
     function closeEnforcementMessage() {
         try {
-            // then check for close button and auto click
             const elementXPath = '//*[@id="container" and contains(@class, "ytd-enforcement-message-view-model")]//*[@id="header" and contains(@class, "ytd-enforcement-message-view-model")]//*[@id="dismiss-button" and contains(@class, "ytd-enforcement-message-view-model")]/button-view-model/button';
             const adElement = getElementByXpath(elementXPath);
             if (adElement) {
                 adElement.click();
                 console.info('enforcement button click by XPath successful');
             }
-        } catch (err) { }
+        } catch (err) {
+            console.error(err);
+        }
     }
 
-    // disconnect observers
     function unloadAllObservers() {
         if (observer) {
             observer.disconnect();
@@ -148,21 +156,16 @@
         }
     }
 
-    // increment count
     function incrementAdSkipCount() {
         adSkipCount++;
         chrome.runtime.sendMessage({ action: "incrementAdSkipCount", count: adSkipCount });
     }
 
-    // Disconnect the observer when the tab is unloaded
-    window.addEventListener('beforeunload', () => {
-        unloadAllObservers();
-    });
+    window.addEventListener('beforeunload', unloadAllObservers);
 
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         if (request.action === "disconnectObserver") {
             unloadAllObservers();
         }
     });
-
 })();
