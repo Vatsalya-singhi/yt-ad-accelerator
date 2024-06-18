@@ -51,8 +51,8 @@
     }
 
     function enforcementListener() {
-        // const xpath = '/html/body/ytd-app/ytd-popup-container/tp-yt-paper-dialog';
-        const xpath = '/html/body/ytd-app/ytd-popup-container';
+        // const xpath = '/html/body/ytd-app/ytd-popup-container';
+        const xpath = '/html/body/ytd-app';
         const e = getElementByXpath(xpath);
         if (!e) {
             console.info('enforcementListener failed');
