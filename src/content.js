@@ -13,7 +13,7 @@
         } catch (err) {
             console.error(err);
         }
-    }, 1000);
+    });
 
     // Ensure observers are set up after initial delay
     setTimeout(() => {
@@ -23,7 +23,7 @@
         if (!observer2) {
             enforcementListener();
         }
-    }, 1000);
+    });
 
     /**
      * MAIN FUNCTIONS

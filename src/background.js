@@ -22,7 +22,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    const condition1 = true; // changeInfo.status === 'complete';  // Check for 'complete' status
+    const condition1 = changeInfo.status === 'complete';  // Check for 'complete' status
+    // const condition1 = true;
     const condition2 = tab.url.includes("https://www.youtube.com/watch");
 
     if (condition1 && condition2) {
