@@ -2,9 +2,9 @@
     let observer = null;
     let observer2 = null;
     let adSkipCount = 0;
+    const playbackRate = 16;
 
     // Initial setup and check
-    
     setTimeout(() => {
         try {
             adVideoManipulation();
@@ -122,7 +122,7 @@
             if (adElement) {
                 adElement.volume = 0;
                 adElement.muted = true;
-                adElement.playbackRate = 16;
+                adElement.playbackRate = playbackRate;
                 incrementAdSkipCount();
             }
         } catch (err) {
@@ -143,6 +143,19 @@
         }
     }
 
+    function incrementAdSkipCount() {
+        adSkipCount++;
+        chrome.runtime.sendMessage({ action: "incrementAdSkipCount", count: adSkipCount });
+    }
+
+    window.addEventListener('beforeunload', unloadAllObservers);
+
+    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+        if (request.action === "disconnectObserver") {
+            unloadAllObservers();
+        }
+    });
+
     function unloadAllObservers() {
         if (observer) {
             observer.disconnect();
@@ -156,16 +169,4 @@
         }
     }
 
-    function incrementAdSkipCount() {
-        adSkipCount++;
-        chrome.runtime.sendMessage({ action: "incrementAdSkipCount", count: adSkipCount });
-    }
-
-    window.addEventListener('beforeunload', unloadAllObservers);
-
-    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-        if (request.action === "disconnectObserver") {
-            unloadAllObservers();
-        }
-    });
 })();
