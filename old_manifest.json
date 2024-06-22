@@ -22,11 +22,13 @@
         "48": "./icons/icon48.png",
         "128": "./icons/icon128.png"
     },
+    "background": {
+        "service_worker": "./src/background.js"
+    },
     "content_scripts": [
         {
             "matches": [
-                "https://www.youtube.com/*",
-                "http://www.youtube.com/*"
+                "https://www.youtube.com/*"
             ],
             "css": [],
             "js": [
@@ -39,7 +41,7 @@
         "tabs"
     ],
     "host_permissions": [
-        "https://www.youtube.com/*",
-        "http://www.youtube.com/*"
+        "http://www.youtube.com/watch*",
+        "https://www.youtube.com/watch*"
     ]
 }
