@@ -1,35 +1,31 @@
 (() => {
     let observer = null;
     let observer2 = null;
-    let adSkipCount = 0;
     const playbackRate = 16;
 
-    // Initial setup and check
-    setTimeout(() => {
-        try {
-            adVideoManipulation();
-            skipBtnClick();
-            enforcementListener();
-        } catch (err) {
-            console.error(err);
-        }
-    });
 
-    // Ensure observers are set up after initial delay
-    setTimeout(() => {
-        if (!observer) {
-            main();
-        }
-        if (!observer2) {
-            enforcementListener();
-        }
-    });
+    const srcCode = () => {
+        setTimeout(() => {
+            try {
+                adVideoManipulation();
+                skipBtnClick();
+                enforcementListener();
+            } catch (err) { console.error(err); }
+        });
+
+        setTimeout(() => {
+            try {
+                if (!observer) main();
+                if (!observer2) enforcementListener();
+            } catch (err) { console.error(err); }
+        });
+    }
 
     /**
      * MAIN FUNCTIONS
      */
 
-    function main() {
+    const main = () => {
         const e = document.getElementById('movie_player');
         if (!e) return;
 
@@ -51,7 +47,51 @@
         }
     }
 
-    function enforcementListener() {
+    const skipBtnClick = () => {
+        try {
+            const skipBtn1 = getElementByXpath('//span[@class="ytp-ad-skip-button-container"]/button');
+            if (skipBtn1) {
+                skipBtn1.click();
+                console.info('skip button click by XPath successful');
+            }
+            const skipBtnList = [];
+            const targetClassNames = [
+                "ytp-ad-skip-button-modern",
+                "ytp-ad-skip-button",
+                "ytp-ad-skip-button-modern ytp-button",
+                "ytp-ad-skip-button ytp-button",
+                "ytp-ad-skip-button-container",
+                "ytp-skip-ad-button"
+            ];
+            targetClassNames.forEach((className) => {
+                skipBtnList.push(...document.getElementsByClassName(className));
+            });
+            skipBtnList.push(document.querySelector('[id^="skip-button"]'));
+            skipBtnList.forEach((btn) => {
+                if (btn) {
+                    btn.click();
+                    console.info('skip button click by ClassName/ID successful');
+                }
+            });
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    const adVideoManipulation = () => {
+        try {
+            const video = getElementByXpath('//*[@id="movie_player" and contains(@class, "ad-showing")]/div[1]/video');
+            if (video) {
+                video.volume = 0;
+                video.muted = true;
+                video.playbackRate = playbackRate;
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    const enforcementListener = () => {
         const xpath = '/html/body/ytd-app';
         const e = getElementByXpath(xpath);
         if (!e) {
@@ -77,68 +117,7 @@
         }
     }
 
-    /**
-     * HELPER FUNCTIONS
-     */
-
-    const getElementByXpath = (path) => document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-
-    function skipBtnClick() {
-        try {
-            const skipBtn1 = getElementByXpath('//span[@class="ytp-ad-skip-button-container"]/button');
-            if (skipBtn1) {
-                skipBtn1.click();
-                console.info('skip button click by XPath successful');
-                incrementAdSkipCount();
-            }
-            const skipBtnList = [];
-            const targetClassNames = [
-                "ytp-ad-skip-button-modern",
-                "ytp-ad-skip-button",
-                "ytp-ad-skip-button-modern ytp-button",
-                "ytp-ad-skip-button ytp-button",
-                "ytp-ad-skip-button-container",
-                "ytp-skip-ad-button"
-            ];
-            targetClassNames.forEach((className) => {
-                skipBtnList.push(...document.getElementsByClassName(className));
-            });
-            skipBtnList.push(document.querySelector('[id^="skip-button"]'));
-            skipBtnList.forEach((btn) => {
-                if (btn) {
-                    btn.click();
-                    console.info('skip button click by ClassName/ID successful');
-                    incrementAdSkipCount();
-                }
-            });
-        } catch (err) {
-            console.error(err);
-        }
-    }
-
-    function adVideoManipulation() {
-        try {
-            const video = getElementByXpath('//*[@id="movie_player" and contains(@class, "ad-showing")]/div[1]/video');
-            if (video) {
-                // video.removeEventListener('ratechange', () => { console.log('ratechange listener removed'); });
-                // video.removeEventListener('seeking', () => { console.log('seeking listener removed'); });
-                // video.removeEventListener('timeupdate', () => { console.log('timeupdate listener removed'); });
-                // video.removeEventListener('seeked', () => { console.log('seeked listener removed'); });
-                video.volume = 0;
-                video.muted = true;
-                video.playbackRate = playbackRate;
-                // incrementAdSkipCount();
-                // if (video.currentTime && video.duration) {
-                //     video.currentTime = video.duration;
-                // }
-                incrementAdSkipCount();
-            }
-        } catch (err) {
-            console.error(err);
-        }
-    }
-
-    function closeEnforcementMessage() {
+    const closeEnforcementMessage = () => {
         try {
             const elementXPath = '//*[@id="container" and contains(@class, "ytd-enforcement-message-view-model")]//*[@id="header" and contains(@class, "ytd-enforcement-message-view-model")]//*[@id="dismiss-button" and contains(@class, "ytd-enforcement-message-view-model")]/button-view-model/button';
             const adElement = getElementByXpath(elementXPath);
@@ -151,20 +130,13 @@
         }
     }
 
-    function incrementAdSkipCount() {
-        adSkipCount++;
-        // chrome.runtime.sendMessage({ action: "incrementAdSkipCount", count: adSkipCount });
-    }
+    /**
+     * HELPER FUNCTIONS
+     */
 
-    window.addEventListener('beforeunload', unloadAllObservers);
+    const getElementByXpath = (path) => document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
 
-    // chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    //     if (request.action === "disconnectObserver") {
-    //         unloadAllObservers();
-    //     }
-    // });
-
-    function unloadAllObservers() {
+    const unloadAllObservers = () => {
         if (observer) {
             observer.disconnect();
             observer = null;
@@ -177,4 +149,10 @@
         }
     }
 
+
+
+
+    // Initial setup and check
+    srcCode();
+    window.addEventListener('unload', () => { unloadAllObservers(); });
 })();
