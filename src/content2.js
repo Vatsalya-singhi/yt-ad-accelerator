@@ -153,16 +153,16 @@
 
     function incrementAdSkipCount() {
         adSkipCount++;
-        chrome.runtime.sendMessage({ action: "incrementAdSkipCount", count: adSkipCount });
+        // chrome.runtime.sendMessage({ action: "incrementAdSkipCount", count: adSkipCount });
     }
 
     window.addEventListener('beforeunload', unloadAllObservers);
 
-    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-        if (request.action === "disconnectObserver") {
-            unloadAllObservers();
-        }
-    });
+    // chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    //     if (request.action === "disconnectObserver") {
+    //         unloadAllObservers();
+    //     }
+    // });
 
     function unloadAllObservers() {
         if (observer) {

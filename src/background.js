@@ -52,41 +52,23 @@ chrome.tabs.onRemoved.addListener((tabId, removeInfo) => {
 });
 
 
-
-
-// Function to create and update rules
-function updateRules() {
-    const blockedUrls = [
-        "https://static.doubleclick.net/instream/ad_status.js",
-        "https://www.youtube.com/s/desktop/jsbin/www-tampering.vflset/www-tampering.js",
-    ];
-
-    const scriptFileNames = blockedUrls.map(url => {
-        // Use regex to match the file name with extension after the last slash
-        let match = url.match(/\/([^\/?#]+)\.js$/);
-        return match ? match[1] + '.js' : ''; // Append .js to the matched file name
-    });
-
-    scriptFileNames.forEach((fileName, index) => {
-        let id = index + 1;
-        // Set up rules
-        chrome.declarativeNetRequest.updateDynamicRules({
-            removeRuleIds: [id],
-            addRules: [{
-                "id": id,
-                "priority": 1,
-                "action": { "type": "block" },
-                "condition": {
-                    "urlFilter": "*://*/*" + fileName,
-                    "resourceTypes": ["script"]
-                }
-            }],
-        });
-
-        console.log("added rule for=>", fileName);
-    });
-}
-
-// Initialize rules on extension install/update
-chrome.runtime.onInstalled.addListener(updateRules);
-chrome.runtime.onStartup.addListener(updateRules);
+// "icons": {
+//     "16": "./icons/icon16.png",
+//         "32": "./icons/icon32.png",
+//             "48": "./icons/icon48.png",
+//                 "128": "./icons/icon128.png"
+// },
+// "background": {
+//     "service_worker": "./src/background.js"
+// },
+// "content_scripts": [
+//     {
+//         "matches": [
+//             "https://www.youtube.com/*"
+//         ],
+//         "css": [],
+//         "js": [
+//             "src/content.js"
+//         ]
+//     }
+// ],
