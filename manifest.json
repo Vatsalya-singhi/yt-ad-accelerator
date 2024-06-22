@@ -35,9 +35,7 @@
     ],
     "permissions": [
         "scripting",
-        "tabs",
-        "storage",
-        "declarativeNetRequest"
+        "tabs"
     ],
     "host_permissions": [
         "http://www.youtube.com/watch*",
