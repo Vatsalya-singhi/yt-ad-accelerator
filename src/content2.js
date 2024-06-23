@@ -5,20 +5,35 @@
 
 
     const srcCode = () => {
-        setTimeout(() => {
-            try {
-                adVideoManipulation();
-                skipBtnClick();
-                enforcementListener();
-            } catch (err) { console.error(err); }
-        });
+        const xpath = '/html/body';
+        const e = getElementByXpath(xpath);
+        if (!e) {
+            console.info('body observer failed');
+            return;
+        }
 
-        setTimeout(() => {
-            try {
-                if (!observer) main();
-                if (!observer2) enforcementListener();
-            } catch (err) { console.error(err); }
-        });
+        try {
+            const obs = new MutationObserver(() => {
+                const xpath = '/html/body/ytd-app';
+                const condition = getElementByXpath(xpath);
+                if (condition) {
+                    try {
+                        adVideoManipulation();
+                        skipBtnClick();
+                        enforcementListener();
+                    } catch (err) { console.error(err); }
+
+                    try {
+                        if (!observer) main();
+                        if (!observer2) enforcementListener();
+                    } catch (err) { console.error(err); }
+                }
+            });
+            obs.observe(e, {
+                childList: true,
+            });
+            console.log('body observer injected');
+        } catch (err) { console.error(err); }
     }
 
     /**
@@ -137,22 +152,24 @@
     const getElementByXpath = (path) => document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
 
     const unloadAllObservers = () => {
-        if (observer) {
-            observer.disconnect();
-            observer = null;
-            console.info('observer disconnected');
-        }
-        if (observer2) {
-            observer2.disconnect();
-            observer2 = null;
-            console.info('observer2 disconnected');
-        }
+        try {
+            if (observer) {
+                observer.disconnect();
+                observer = null;
+                console.info('observer disconnected');
+            }
+            if (observer2) {
+                observer2.disconnect();
+                observer2 = null;
+                console.info('observer2 disconnected');
+            }
+        } catch (err) { }
     }
 
 
 
-
     // Initial setup and check
-    srcCode();
-    window.addEventListener('unload', () => { unloadAllObservers(); });
+    window.addEventListener("load", () => { console.log("load called"); srcCode(); })
+    window.addEventListener('unload', () => { console.log("unload called"); unloadAllObservers(); });
+    // console.log('TRIGGERRREEDD');
 })();
