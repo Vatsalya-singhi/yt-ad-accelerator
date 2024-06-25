@@ -3,30 +3,38 @@
     let observer2 = null;
     const playbackRate = 16;
 
+    /**
+    * MAIN FUNCTIONS
+    */
 
     const srcCode = () => {
-        const xpath = '/html/body';
-        const e = getElementByXpath(xpath);
-        if (!e) {
-            console.info('body observer failed');
-            return;
-        }
+        const e = getElementByXpath('/html/body');
+        if (!e) return;
 
         try {
             const obs = new MutationObserver(() => {
-                const xpath = '/html/body/ytd-app';
-                const condition = getElementByXpath(xpath);
+                const condition = getElementByXpath('/html/body/ytd-app');
                 if (condition) {
                     try {
                         adVideoManipulation();
                         skipBtnClick();
                         enforcementListener();
                     } catch (err) { console.error(err); }
+                    playerManipulation();
+                    enforcementListener();
+                    debounce(() => {
+                        try {
+                            if (!observer) playerManipulation();
+                            if (!observer2) enforcementListener();
+                            // remove mutation observer on body - performance
+                            // if (obs) {
+                            //     obs.disconnect();
+                            //     obs = null;
+                            //     console.info('obs disconnected');
+                            // }
+                        } catch (err) { console.error(err); }
+                    }, 300);
 
-                    try {
-                        if (!observer) main();
-                        if (!observer2) enforcementListener();
-                    } catch (err) { console.error(err); }
                 }
             });
             obs.observe(e, {
@@ -36,30 +44,73 @@
         } catch (err) { console.error(err); }
     }
 
-    /**
-     * MAIN FUNCTIONS
-     */
-
-    const main = () => {
+    const playerManipulation = () => {
         const e = document.getElementById('movie_player');
         if (!e) return;
 
         try {
-            // Create an observer instance
-            observer = new MutationObserver((mutations) => {
-                skipBtnClick();
-                adVideoManipulation();
+            observer = new MutationObserver(() => {
+                // skipBtnClick();
+                // adVideoManipulation();
+                debounce(() => {
+                    skipBtnClick();
+                    adVideoManipulation();
+                }, 300);
             });
             observer.observe(e, {
                 attributes: true,
                 attributeFilter: ['class'],
             });
-
-            adVideoManipulation();
-            skipBtnClick();
+            // adVideoManipulation();
+            // skipBtnClick();
         } catch (err) {
             console.error(err);
         }
+    }
+
+    const enforcementListener = () => {
+        const e = getElementByXpath('/html/body/ytd-app');
+        if (!e) return;
+
+        try {
+            observer2 = new MutationObserver(() => {
+                // closeEnforcementMessage();
+                debounce(() => {
+                    closeEnforcementMessage();
+                }, 300);
+            });
+            observer2.observe(e, {
+                childList: true,
+                subtree: true,
+                // attributes: true,
+                // attributeFilter: ['class', 'style'],
+                // characterData: true,
+            });
+            // closeEnforcementMessage();
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    /**
+    * MAIN FUNCTIONS
+    */
+
+
+    /**
+    * HELPER FUNCTIONS
+    */
+
+    const debounce = (func, wait) => {
+        let timeout;
+        return function (...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), wait);
+        };
+    }
+
+    const getElementByXpath = (path) => {
+        return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
     }
 
     const skipBtnClick = () => {
@@ -106,32 +157,6 @@
         }
     }
 
-    const enforcementListener = () => {
-        const xpath = '/html/body/ytd-app';
-        const e = getElementByXpath(xpath);
-        if (!e) {
-            console.info('enforcementListener failed');
-            return;
-        }
-
-        try {
-            observer2 = new MutationObserver((mutations) => {
-                closeEnforcementMessage();
-            });
-            observer2.observe(e, {
-                subtree: true,
-                childList: true,
-                attributes: true,
-                attributeFilter: ['class', 'style'],
-                characterData: true,
-            });
-
-            closeEnforcementMessage();
-        } catch (err) {
-            console.error(err);
-        }
-    }
-
     const closeEnforcementMessage = () => {
         try {
             const elementXPath = '//*[@id="container" and contains(@class, "ytd-enforcement-message-view-model")]//*[@id="header" and contains(@class, "ytd-enforcement-message-view-model")]//*[@id="dismiss-button" and contains(@class, "ytd-enforcement-message-view-model")]/button-view-model/button';
@@ -144,12 +169,6 @@
             console.error(err);
         }
     }
-
-    /**
-     * HELPER FUNCTIONS
-     */
-
-    const getElementByXpath = (path) => document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
 
     const unloadAllObservers = () => {
         try {
@@ -166,10 +185,15 @@
         } catch (err) { }
     }
 
+    /**
+    * HELPER FUNCTIONS
+    */
 
 
     // Initial setup and check
-    window.addEventListener("load", () => { console.log("load called"); srcCode(); })
-    window.addEventListener('unload', () => { console.log("unload called"); unloadAllObservers(); });
+    try {
+        window.addEventListener("load", () => { console.log("load called"); srcCode(); })
+        window.addEventListener('unload', () => { console.log("unload called"); unloadAllObservers(); });
+    } catch (err) { }
     // console.log('TRIGGERRREEDD');
 })();
