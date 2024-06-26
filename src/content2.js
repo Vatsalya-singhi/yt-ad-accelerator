@@ -7,66 +7,65 @@
     * MAIN FUNCTIONS
     */
 
+
     const srcCode = () => {
-        const e = getElementByXpath('/html/body');
-        if (!e) return;
 
-        try {
-            const obs = new MutationObserver(() => {
-                const condition = getElementByXpath('/html/body/ytd-app');
-                if (condition) {
-                    try {
-                        adVideoManipulation();
-                        skipBtnClick();
-                        enforcementListener();
-                    } catch (err) { console.error(err); }
-                    playerManipulation();
-                    enforcementListener();
-                    debounce(() => {
-                        try {
-                            if (!observer) playerManipulation();
-                            if (!observer2) enforcementListener();
-                            // remove mutation observer on body - performance
-                            // if (obs) {
-                            //     obs.disconnect();
-                            //     obs = null;
-                            //     console.info('obs disconnected');
-                            // }
-                        } catch (err) { console.error(err); }
-                    }, 300);
+        const condition2 = getElementByXpath('/html/body/ytd-app');
+        if (!condition2) return;
 
-                }
-            });
-            obs.observe(e, {
+        const obs2 = new MutationObserver((_, obs2) => {
+            // obs2.disconnect();
+            const condition3 = getElementByXpath('/html/body/ytd-app/div[1]/ytd-page-manager');
+            if (!condition3) return;
+
+            const obs3 = new MutationObserver((_, obs3) => {
+                // obs3.disconnect();
+                const condition4 = getElementByXpath('//*[@id="page-manager"]/ytd-watch-flexy');
+                if (!condition4) return;
+
+                const obs4 = new MutationObserver((_, obs4) => {
+                    // obs4.disconnect();
+                    const condition5 = getElementByXpath('/html/body/ytd-app/div[1]/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/div[1]/div[2]/div/div/ytd-player');
+                    if (!condition5) return;
+
+                    const obs5 = new MutationObserver((_, obs5) => {
+                        // obs5.disconnect();
+                        if (!observer) {
+                            skipBtnClick();
+                            adVideoManipulation();
+                        }
+                        if (!observer2) {
+                            enforcementListener();
+                        }
+                    })
+
+                    obs5.observe(condition5, {
+                        childList: true,
+                        subtree: true,
+                    });
+
+                });
+
+                obs4.observe(condition4, {
+                    childList: true,
+                    subtree: true,
+                });
+
+            })
+
+            obs3.observe(condition3, {
                 childList: true,
+                subtree: true,
             });
-            console.log('body observer injected');
-        } catch (err) { console.error(err); }
+
+        })
+
+        obs2.observe(condition2, {
+            childList: true,
+        });
+
     }
 
-    const playerManipulation = () => {
-        const e = document.getElementById('movie_player');
-        if (!e) return;
-
-        try {
-            observer = new MutationObserver(() => {
-                // skipBtnClick();
-                // adVideoManipulation();
-                debounce(() => {
-                    skipBtnClick();
-                    adVideoManipulation();
-                }, 300);
-            });
-            observer.observe(e, {
-                attributes: true,
-                attributeFilter: ['class'],
-            });
-            // adVideoManipulation();
-            // skipBtnClick();
-        } catch (err) {
-            console.error(err);
-        }
-    }
 
     const enforcementListener = () => {
         const e = getElementByXpath('/html/body/ytd-app');
@@ -74,10 +73,7 @@
 
         try {
             observer2 = new MutationObserver(() => {
-                // closeEnforcementMessage();
-                debounce(() => {
-                    closeEnforcementMessage();
-                }, 300);
+                closeEnforcementMessage();
             });
             observer2.observe(e, {
                 childList: true,
@@ -86,7 +82,6 @@
                 // attributeFilter: ['class', 'style'],
                 // characterData: true,
             });
-            // closeEnforcementMessage();
         } catch (err) {
             console.error(err);
         }
@@ -101,13 +96,6 @@
     * HELPER FUNCTIONS
     */
 
-    const debounce = (func, wait) => {
-        let timeout;
-        return function (...args) {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func.apply(this, args), wait);
-        };
-    }
 
     const getElementByXpath = (path) => {
         return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
@@ -191,9 +179,6 @@
 
 
     // Initial setup and check
-    try {
-        window.addEventListener("load", () => { console.log("load called"); srcCode(); })
-        window.addEventListener('unload', () => { console.log("unload called"); unloadAllObservers(); });
-    } catch (err) { }
-    // console.log('TRIGGERRREEDD');
+    window.addEventListener("load", () => { console.log("load called"); srcCode(); })
+    // window.addEventListener('unload', () => { console.log("unload called"); unloadAllObservers(); });
 })();
