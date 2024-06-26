@@ -7,29 +7,29 @@
     * MAIN FUNCTIONS
     */
 
-
     const srcCode = () => {
 
         const condition2 = getElementByXpath('/html/body/ytd-app');
         if (!condition2) return;
 
-        const obs2 = new MutationObserver((_, obs2) => {
-            // obs2.disconnect();
+        const obs2 = new MutationObserver(() => {
             const condition3 = getElementByXpath('/html/body/ytd-app/div[1]/ytd-page-manager');
             if (!condition3) return;
 
-            const obs3 = new MutationObserver((_, obs3) => {
-                // obs3.disconnect();
+            const obs3 = new MutationObserver(() => {
                 const condition4 = getElementByXpath('//*[@id="page-manager"]/ytd-watch-flexy');
                 if (!condition4) return;
 
-                const obs4 = new MutationObserver((_, obs4) => {
-                    // obs4.disconnect();
+                const obs4 = new MutationObserver(() => {
                     const condition5 = getElementByXpath('/html/body/ytd-app/div[1]/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/div[1]/div[2]/div/div/ytd-player');
                     if (!condition5) return;
 
-                    const obs5 = new MutationObserver((_, obs5) => {
+                    const obs5 = new MutationObserver(() => {
                         // obs5.disconnect();
+                        // obs4.disconnect();
+                        // obs3.disconnect();
+                        obs2.disconnect();
+
                         if (!observer) {
                             skipBtnClick();
                             adVideoManipulation();
@@ -55,13 +55,14 @@
 
             obs3.observe(condition3, {
                 childList: true,
-                subtree: true,
+                // subtree: true,
             });
 
         })
 
         obs2.observe(condition2, {
             childList: true,
+            // subtree: true,
         });
 
     }
@@ -158,27 +159,12 @@
         }
     }
 
-    const unloadAllObservers = () => {
-        try {
-            if (observer) {
-                observer.disconnect();
-                observer = null;
-                console.info('observer disconnected');
-            }
-            if (observer2) {
-                observer2.disconnect();
-                observer2 = null;
-                console.info('observer2 disconnected');
-            }
-        } catch (err) { }
-    }
-
     /**
     * HELPER FUNCTIONS
     */
 
 
     // Initial setup and check
-    window.addEventListener("load", () => { console.log("load called"); srcCode(); })
-    // window.addEventListener('unload', () => { console.log("unload called"); unloadAllObservers(); });
+    window.addEventListener("load", () => { srcCode(); })
+
 })();
