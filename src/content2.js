@@ -42,10 +42,13 @@
                     const condition4 = getElementByXpath('/html/body/ytd-app/div[1]/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/div[1]/div[2]/div/div/ytd-player');
                     if (!condition4) return;
 
+                    // reload on ad blocker warnings
+                    refreshOnEnforcementMessage();
                     obs4 = new MutationObserver(() => {
                         skipBtnClick();
                         adVideoManipulation();
                         closeEnforcementMessage();
+                        refreshOnEnforcementMessage();
                     })
                     obs4.observe(condition4, {
                         childList: true,
@@ -109,18 +112,27 @@
     }
 
     const adVideoManipulation = () => {
-        const videoElement = getElementByXpath('//*[@id="movie_player" and contains(@class, "ad-showing")]/div[1]/video');
-        if (!videoElement) return;
-        videoElement.volume = 0;
-        videoElement.muted = true;
-        videoElement.playbackRate = playbackRate;
+        setTimeout(() => {
+            const videoElement = getElementByXpath('//*[@id="movie_player" and contains(@class, "ad-showing")]/div[1]/video');
+            if (!videoElement) return;
+            videoElement.volume = 0;
+            videoElement.muted = true;
+            videoElement.playbackRate = playbackRate;
+        }, 500);
     }
 
     const closeEnforcementMessage = () => {
-        const adElement = getElementByXpath('//*[@id="container" and contains(@class, "ytd-enforcement-message-view-model")]//*[@id="header" and contains(@class, "ytd-enforcement-message-view-model")]//*[@id="dismiss-button" and contains(@class, "ytd-enforcement-message-view-model")]/button-view-model/button');
+        setTimeout(() => {
+            const adElement = getElementByXpath('//*[@id="container" and contains(@class, "ytd-enforcement-message-view-model")]//*[@id="header" and contains(@class, "ytd-enforcement-message-view-model")]//*[@id="dismiss-button" and contains(@class, "ytd-enforcement-message-view-model")]/button-view-model/button');
+            if (!adElement) return;
+            adElement.click();
+        }, 500);
+    }
+
+    const refreshOnEnforcementMessage = () => {
+        const adElement = getElementByXpath('//*[@id="container" and contains(@class, "ytd-enforcement-message-view-model")]');
         if (!adElement) return;
-        adElement.click();
-        console.info('enforcement button click by XPath successful');
+        window.location.reload();
     }
 
     /**
@@ -128,6 +140,8 @@
     */
 
     // Initial setup and check
-    window.addEventListener("load", () => { sourceCode(); })
+    window.addEventListener("load", () => {
+        sourceCode();
+    })
 
 })();
