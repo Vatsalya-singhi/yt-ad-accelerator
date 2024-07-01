@@ -25,7 +25,8 @@
             // check if exist
             if (obs2) return;
             // check for element
-            const condition2 = getElementByXpath('/html/body/ytd-app/div[1]/ytd-page-manager');
+            // const condition2 = getElementByXpath('/html/body/ytd-app/div[1]/ytd-page-manager');
+            const condition2 = getElementByXpath('//*[@id="page-manager"]');
             if (!condition2) return;
 
             obs2 = new MutationObserver(() => {
@@ -39,7 +40,8 @@
                     // check if exist
                     if (obs4) return;
                     // check for element
-                    const condition4 = getElementByXpath('/html/body/ytd-app/div[1]/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/div[1]/div[2]/div/div/ytd-player');
+                    // const condition4 = getElementByXpath('/html/body/ytd-app/div[1]/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/div[1]/div[2]/div/div/ytd-player');
+                    const condition4 = getElementByXpath('//*[@id="ytd-player"]');
                     if (!condition4) return;
 
                     // reload on ad blocker warnings
