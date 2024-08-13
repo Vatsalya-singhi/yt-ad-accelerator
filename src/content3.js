@@ -5,6 +5,7 @@
     */
 
     const playbackRate = 16;
+    let currentVideoTime = 0;
     let obs1 = null;
     let obs2 = null;
     let obs3 = null;
@@ -25,7 +26,6 @@
             // check if exist
             if (obs2) return;
             // check for element
-            // const condition2 = getElementByXpath('/html/body/ytd-app/div[1]/ytd-page-manager');
             const condition2 = getElementByXpath('//*[@id="page-manager"]');
             if (!condition2) return;
 
@@ -40,7 +40,6 @@
                     // check if exist
                     if (obs4) return;
                     // check for element
-                    // const condition4 = getElementByXpath('/html/body/ytd-app/div[1]/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/div[1]/div[2]/div/div/ytd-player');
                     const condition4 = getElementByXpath('//*[@id="ytd-player"]');
                     if (!condition4) return;
 
@@ -49,6 +48,7 @@
                     obs4 = new MutationObserver(() => {
                         skipBtnClick();
                         adVideoManipulation();
+                        actualVideoListenser();
                         closeEnforcementMessage();
                         refreshOnEnforcementMessage();
                     })
@@ -123,6 +123,18 @@
         }, 500);
     }
 
+    const actualVideoListenser = () => {
+        setTimeout(() => {
+            const videoElement = getElementByXpath('//*[@id="movie_player" and not(contains(@class, "ad-showing"))]/div[1]/video');
+            if (!videoElement) return;
+            videoElement.addEventListener("timeupdate", () => {
+                if (!!parseInt(videoElement.currentTime)) {
+                    currentVideoTime = parseInt(videoElement.currentTime);
+                }
+            });
+        }, 500);
+    }
+
     const closeEnforcementMessage = () => {
         setTimeout(() => {
             const adElement = getElementByXpath('//*[@id="container" and contains(@class, "ytd-enforcement-message-view-model")]//*[@id="header" and contains(@class, "ytd-enforcement-message-view-model")]//*[@id="dismiss-button" and contains(@class, "ytd-enforcement-message-view-model")]/button-view-model/button');
@@ -136,10 +148,12 @@
         if (!adElement) return;
 
         const currentURL = window.location.href ?? document.URL;
-        const timestamp = 100; // have to find this
-
+        const timestamp = currentVideoTime ?? 0;
         if (currentURL && timestamp) {
-            newURL = currentURL + `&t=${timestamp}s`;
+            let url = new URL(currentURL);
+            let params = new URLSearchParams(url.search);
+            params.set("t", `${timestamp}s`);
+            let newURL = new URL(`${url.origin}${url.pathname}?${params}`);
             window.location.href = newURL;
         } else {
             window.location.reload();
