@@ -160,6 +160,8 @@
         }
     }
 
+    const resetCurrentVideoTime = () => { if (currentVideoTime) currentVideoTime = 0; }
+
     /**
     * INIT FUNCTIONS
     */
@@ -172,5 +174,12 @@
     document.addEventListener("load", () => {
         sourceCode();
     })
+
+
+    window.addEventListener('locationchange', resetCurrentVideoTime);
+
+    window.addEventListener('popstate', resetCurrentVideoTime);
+
+
 
 })();
