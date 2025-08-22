@@ -7,7 +7,7 @@
   "manifest_version": 3,
   "action": {
     "default_title": "YouTube Ad Accelerator",
-    "default_popup": "./src/index.html",
+    "default_popup": "./index.html",
     "default_locale": "en",
     "default_icon": {
       "16": "./icons/icon16.png",
@@ -25,12 +25,11 @@
   "content_scripts": [
     {
       "matches": ["https://www.youtube.com/*"],
-      "css": [],
       "js": ["./src/content_optimised_performance.js"],
       "all_frames": true
     }
   ],
-  "permissions": ["scripting", "tabs"],
+  "permissions": ["scripting", "tabs", "storage"],
   "host_permissions": [
     "https://www.youtube.com/watch?*",
     "https://sponsor.ajay.app/*"

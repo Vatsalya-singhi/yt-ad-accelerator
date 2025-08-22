@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Ad Accelerator</title>
+    <link rel="stylesheet" type="text/css" href="./index.css" />
+</head>
+
+<body>
+    <div class="container">
+        <header class="header">
+            <h2 class="title">YouTube Ad Accelerator</h2>
+            <button id="closeBtn" class="close-btn">&times;</button>
+        </header>
+        <!-- <h2 class="title">YouTube Ad Accelerator</h2> -->
+        <p class="subtitle">
+            This extension automates ad skipping and enhances your YouTube experience by making ad watching smoother.
+        </p>
+        <p class="links">
+            For more details and updates, visit the
+            <a href="https://github.com/Vatsalya-singhi/yt-ad-accelerator" target="_blank">GitHub repository</a>.
+        </p>
+        <p class="links">
+            Love the app? Then
+            <a href="https://chrome.google.com/webstore/detail/yt-ad-accelerator/lnhnblhicjngnoddkojhdhebiccbfbfc"
+                target="_blank">Leave a Review</a>.
+        </p>
+
+        <hr class="divider">
+
+        <!-- SponsorBlock Toggles -->
+        <div id="segment-toggles" class="card">
+            <h3 class="card-title">Skip Segment Types</h3>
+
+            <label class="switch">
+                <input type="checkbox" value="sponsor" checked>
+                <span class="slider"></span>
+                <span class="label-text">Sponsor</span>
+            </label>
+
+            <label class="switch">
+                <input type="checkbox" value="intro" checked>
+                <span class="slider"></span>
+                <span class="label-text">Intro</span>
+            </label>
+
+            <label class="switch">
+                <input type="checkbox" value="outro" checked>
+                <span class="slider"></span>
+                <span class="label-text">Outro</span>
+            </label>
+
+            <label class="switch">
+                <input type="checkbox" value="interaction" checked>
+                <span class="slider"></span>
+                <span class="label-text">Interaction</span>
+            </label>
+
+            <label class="switch">
+                <input type="checkbox" value="selfpromo" checked>
+                <span class="slider"></span>
+                <span class="label-text">Self Promo</span>
+            </label>
+
+            <label class="switch">
+                <input type="checkbox" value="music_offtopic" checked>
+                <span class="slider"></span>
+                <span class="label-text">Music / Offtopic</span>
+            </label>
+
+            <label class="switch">
+                <input type="checkbox" value="preview" checked>
+                <span class="slider"></span>
+                <span class="label-text">Preview</span>
+            </label>
+
+            <label class="switch">
+                <input type="checkbox" value="filler" checked>
+                <span class="slider"></span>
+                <span class="label-text">Filler</span>
+            </label>
+
+            <button id="save-settings" class="btn">Save</button>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast">Settings saved!</div>
+
+    <script src="./popup.js"></script>
+</body>
+
+</html>

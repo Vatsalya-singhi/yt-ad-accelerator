@@ -1,4 +1,4 @@
-(() => {
+(async () => {
 
     /**
      * =======================
@@ -57,6 +57,17 @@
     }
 
     const resetCurrentVideoTime = () => { currentVideoTime = 0; }
+
+    async function loadUserSettings() {
+        return new Promise(resolve => {
+            chrome.storage.sync.get("skipCategories", ({ skipCategories }) => {
+                resolve(skipCategories || [
+                    "sponsor", "intro", "outro", "interaction", "selfpromo", "music_offtopic", "preview", "filler"
+                ]);
+            });
+        });
+    }
+
 
     /**
      * =======================
@@ -126,8 +137,9 @@
      * =======================
      */
 
-    const handleVideoTimeUpdate = () => {
+    const handleVideoTimeUpdate = async () => {
         const now = Date.now();
+        const skipCategories = await loadUserSettings();
         if (now - lastTimeUpdate < THROTTLE_INTERVAL) return;
         lastTimeUpdate = now;
 
@@ -138,13 +150,18 @@
         if (nextSegmentIndex < sponsorSegments.length) {
             const segment = sponsorSegments[nextSegmentIndex];
             const [start, end] = segment.segment;
-            if (currentVideoTime >= start && currentVideoTime < end) {
-                console.info(`Skipping segment [${start}-${end}] (${segment.category})`);
-                videoElement.currentTime = end;
-                nextSegmentIndex++;
-            } else if (currentVideoTime >= end) {
-                nextSegmentIndex++;
+            if (skipCategories.includes(segment.category)) {
+                if (currentVideoTime >= start && currentVideoTime < end) {
+                    console.info(`Skipping segment [${start}-${end}] (${segment.category})`);
+                    videoElement.currentTime = end;
+                    nextSegmentIndex++;
+                } else if (currentVideoTime >= end) {
+                    nextSegmentIndex++;
+                }
+            } else {
+                nextSegmentIndex++; // skip this segment, don't auto-skip
             }
+
         }
 
         // Ad skipping and manipulation
@@ -216,6 +233,7 @@
         lastVideoId = videoId;
         videoElement = getElementByXpath('//*[@id="movie_player"]/div[1]/video');
         sponsorSegments = await fetchSponsorBlockSegments(videoId);
+        console.log("sponsorSegments:", sponsorSegments);
     }
 
     /**
