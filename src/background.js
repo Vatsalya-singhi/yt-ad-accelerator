@@ -51,24 +51,6 @@ chrome.tabs.onRemoved.addListener((tabId, removeInfo) => {
     }
 });
 
-
-// "icons": {
-//     "16": "./icons/icon16.png",
-//         "32": "./icons/icon32.png",
-//             "48": "./icons/icon48.png",
-//                 "128": "./icons/icon128.png"
-// },
 // "background": {
 //     "service_worker": "./src/background.js"
 // },
-// "content_scripts": [
-//     {
-//         "matches": [
-//             "https://www.youtube.com/*"
-//         ],
-//         "css": [],
-//         "js": [
-//             "src/content.js"
-//         ]
-//     }
-// ],

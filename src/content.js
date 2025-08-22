@@ -51,6 +51,7 @@
                         actualVideoListenser();
                         closeEnforcementMessage();
                         refreshOnEnforcementMessage();
+                        handleVideoChange(); // <--- NEW: fetch SponsorBlock data when video changes
                     })
                     obs4.observe(condition4, {
                         childList: true,
@@ -77,17 +78,6 @@
     * HELPER FUNCTIONS
     */
 
-    // const getAllElementsByRegex = () => {
-    //     const regex = /skip-button:\d+/; // Example: matches "skip-button:10", "skip-button:1p", etc.
-    //     const elements = document.querySelectorAll('[id]');
-    //     elements.forEach(element => {
-    //         if (regex.test(element.id)) {
-    //             element.click();
-    //             console.log("skip button click by Regex successful");
-    //         }
-    //     });
-    // }
-
     const getElementByXpath = (path) => {
         return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
     }
@@ -99,9 +89,7 @@
                 skipBtn1.click();
                 console.info('skip button click by XPath successful');
             }
-            
-            // getAllElementsByRegex();
-            
+
             const skipBtnList = [];
             const targetClassNames = [
                 "ytp-ad-skip-button-modern",
@@ -144,6 +132,38 @@
                 if (!!parseInt(videoElement.currentTime)) {
                     currentVideoTime = parseInt(videoElement.currentTime);
                 }
+
+                // Auto-skip SponsorBlock segments
+                // if (sponsorSegments.length > 0) {
+                //     sponsorSegments.forEach((segment) => {
+                //         const [start, end] = segment.segment;
+                //         const segmentId = `${start}-${end}`; // unique ID for this segment
+
+                //         if (!skippedSegments.has(segmentId) &&
+                //             currentVideoTime >= start &&
+                //             currentVideoTime < end
+                //         ) {
+                //             console.info(`Skipping segment [${start}-${end}] (${segment.category})`);
+                //             videoElement.currentTime = end;  // jump to end
+                //             skippedSegments.add(segmentId);  // mark as skipped
+                //         }
+                //     });
+                // }
+
+                // Only check the next segment
+                if (nextSegmentIndex < sponsorSegments.length) {
+                    const segment = sponsorSegments[nextSegmentIndex];
+                    const [start, end] = segment.segment;
+
+                    if (currentVideoTime >= start && currentVideoTime < end) {
+                        console.info(`Skipping segment [${start}-${end}] (${segment.category})`);
+                        videoElement.currentTime = end;  // jump to end of segment
+                        nextSegmentIndex++; // move to the next segment
+                    } else if (currentVideoTime >= end) {
+                        // Already passed this segment without skipping (e.g., user seeked)
+                        nextSegmentIndex++;
+                    }
+                }
             });
         }, 500);
     }
@@ -175,6 +195,54 @@
 
     const resetCurrentVideoTime = () => { if (currentVideoTime) currentVideoTime = 0; }
 
+    // =======================
+    // SPONSORBLOCK INTEGRATION
+    // =======================
+    let lastVideoId = null;
+    let sponsorSegments = []; // store fetched segments
+    let skippedSegments = new Set(); // track already skipped segments
+    let nextSegmentIndex = 0; // index of the next segment to check
+    function getVideoId() {
+        try {
+            const url = new URL(window.location.href);
+            return url.searchParams.get("v");
+        } catch (e) {
+            console.error("Could not parse videoId:", e);
+            return null;
+        }
+    }
+
+    async function fetchSponsorBlockSegments(videoId) {
+        const endpoint = `https://sponsor.ajay.app/api/skipSegments?videoID=${videoId}`;
+        try {
+            const res = await fetch(endpoint);
+            if (!res.ok) throw new Error(`API error: ${res.status}`);
+            const data = await res.json();
+            console.log("SponsorBlock segments:", data);
+            sponsorSegments = data; // save globally for later use
+            return data;
+        } catch (err) {
+            console.error("Failed to fetch SponsorBlock data:", err);
+            sponsorSegments = [];
+            return [];
+        }
+    }
+
+    async function handleVideoChange() {
+        const videoId = getVideoId();
+        if (!videoId || videoId === lastVideoId) return;
+
+        lastVideoId = videoId;
+        console.log("Detected new video:", videoId);
+
+        sponsorSegments = await fetchSponsorBlockSegments(videoId);
+        // Sort segments by start time
+        sponsorSegments.sort((a, b) => a.segment[0] - b.segment[0]);
+        nextSegmentIndex = 0; // reset for new video
+        skippedSegments.clear(); // reset for new video
+    }
+
+
     /**
     * INIT FUNCTIONS
     */
@@ -193,6 +261,6 @@
 
     window.addEventListener('popstate', resetCurrentVideoTime);
 
-
+    window.addEventListener("yt-navigate-finish", handleVideoChange);
 
 })();
