@@ -26,14 +26,12 @@
     {
       "matches": ["https://www.youtube.com/*"],
       "css": [],
-      "js": ["./src/content_clean.js"],
-      "all_frames": true,
-      "match_about_blank": true
+      "js": ["./src/content_optimised_performance.js"],
+      "all_frames": true
     }
   ],
   "permissions": ["scripting", "tabs"],
   "host_permissions": [
-    "https://www.youtube.com/*",
     "https://www.youtube.com/watch?*",
     "https://sponsor.ajay.app/*"
   ]
