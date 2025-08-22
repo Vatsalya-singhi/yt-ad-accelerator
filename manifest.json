@@ -29,7 +29,7 @@
             ],
             "css": [],
             "js": [
-                "./src/content3.js"
+                "./src/content.js"
             ],
             "all_frames": true,
             "match_about_blank": true
@@ -40,7 +40,7 @@
             ],
             "css": [],
             "js": [
-                "./src/content3.js"
+                "./src/content.js"
             ],
             "all_frames": true,
             "match_about_blank": true
