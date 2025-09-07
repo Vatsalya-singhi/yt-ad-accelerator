@@ -1,12 +1,13 @@
 (async () => {
-
     /**
      * =======================
      * GLOBAL VARIABLES
      * =======================
      */
-    const playbackRate = 16;
+    const PLAYBACK_RATE = 16;
     let currentVideoTime = 0;
+
+    // MutationObservers
     let obs1 = null, obs2 = null, obs3 = null, obs4 = null;
 
     // SponsorBlock variables
@@ -15,16 +16,15 @@
     let nextSegmentIndex = 0;
 
     let videoElement = null;
-    let lastTimeUpdate = 0;       // For throttling
+    let lastTimeUpdate = 0; // For throttling
 
     const THROTTLE_INTERVAL = 100; // Run listener every 100ms
 
     /**
      * =======================
-     * HELPER FUNCTIONS
+     * HELPERS
      * =======================
      */
-
     const getElementByXpath = (path) =>
         document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
 
@@ -44,37 +44,46 @@
             const res = await fetch(endpoint);
             if (!res.ok) throw new Error(`API error: ${res.status}`);
             const data = await res.json();
-            sponsorSegments = data;
-            sponsorSegments.sort((a, b) => a.segment[0] - b.segment[0]);
+            sponsorSegments = data.sort((a, b) => a.segment[0] - b.segment[0]);
             nextSegmentIndex = 0;
-            return data;
+            return sponsorSegments;
         } catch (err) {
-            console.error("Failed to fetch SponsorBlock data:", err);
             sponsorSegments = [];
             nextSegmentIndex = 0;
             return [];
         }
     }
 
-    const resetCurrentVideoTime = () => { currentVideoTime = 0; }
+    const resetCurrentVideoTime = () => { currentVideoTime = 0; };
 
     async function loadUserSettings() {
-        return new Promise(resolve => {
-            chrome.storage.sync.get("skipCategories", ({ skipCategories }) => {
-                resolve(skipCategories || [
+        return new Promise((resolve) => {
+            if (typeof chrome === "undefined" || !chrome.storage?.local) {
+                console.warn("chrome.storage.local unavailable – using defaults.");
+                return resolve([
                     "sponsor", "intro", "outro", "interaction", "selfpromo", "music_offtopic", "preview", "filler"
                 ]);
-            });
+            }
+            try {
+                chrome.storage.local.get("skipCategories", ({ skipCategories }) => {
+                    resolve(skipCategories || [
+                        "sponsor", "intro", "outro", "interaction", "selfpromo", "music_offtopic", "preview", "filler"
+                    ]);
+                });
+            } catch (err) {
+                console.error("Error reading storage:", err);
+                resolve([
+                    "sponsor", "intro", "outro", "interaction", "selfpromo", "music_offtopic", "preview", "filler"
+                ]);
+            }
         });
     }
-
 
     /**
      * =======================
      * AD & SPONSOR SKIPPING
      * =======================
      */
-
     const skipBtnClick = () => {
         try {
             const skipBtnXPath = getElementByXpath('//span[@class="ytp-ad-skip-button-container"]/button');
@@ -95,23 +104,23 @@
         } catch (err) {
             console.error(err);
         }
-    }
+    };
 
     const adVideoManipulation = () => {
         if (!videoElement) return;
         if (videoElement.closest(".ad-showing")) {
             videoElement.volume = 0;
             videoElement.muted = true;
-            videoElement.playbackRate = playbackRate;
+            videoElement.playbackRate = PLAYBACK_RATE;
         }
-    }
+    };
 
     const closeEnforcementMessage = () => {
         const adElement = getElementByXpath(
             '//*[@id="container" and contains(@class, "ytd-enforcement-message-view-model")]//*[@id="dismiss-button"]/button-view-model/button'
         );
         if (adElement) adElement.click();
-    }
+    };
 
     const refreshOnEnforcementMessage = () => {
         const adElement = getElementByXpath('//*[@id="container" and contains(@class, "ytd-enforcement-message-view-model")]');
@@ -129,22 +138,22 @@
         } else {
             window.location.reload();
         }
-    }
+    };
 
     /**
      * =======================
-     * THROTTLED TIMEUPDATE HANDLER
+     * VIDEO HANDLING
      * =======================
      */
-
     const handleVideoTimeUpdate = async () => {
         const now = Date.now();
-        const skipCategories = await loadUserSettings();
         if (now - lastTimeUpdate < THROTTLE_INTERVAL) return;
         lastTimeUpdate = now;
 
         if (!videoElement) return;
         currentVideoTime = parseInt(videoElement.currentTime) || 0;
+
+        const skipCategories = await loadUserSettings();
 
         // SponsorBlock skipping
         if (nextSegmentIndex < sponsorSegments.length) {
@@ -159,15 +168,14 @@
                     nextSegmentIndex++;
                 }
             } else {
-                nextSegmentIndex++; // skip this segment, don't auto-skip
+                nextSegmentIndex++; // skip this segment
             }
-
         }
 
         // Ad skipping and manipulation
         adVideoManipulation();
         skipBtnClick();
-    }
+    };
 
     const attachVideoListener = () => {
         if (!videoElement) {
@@ -176,6 +184,16 @@
         }
         videoElement.removeEventListener("timeupdate", handleVideoTimeUpdate);
         videoElement.addEventListener("timeupdate", handleVideoTimeUpdate);
+    };
+
+    async function handleVideoChange() {
+        const videoId = getVideoId();
+        if (!videoId || videoId === lastVideoId) return;
+
+        lastVideoId = videoId;
+        videoElement = getElementByXpath('//*[@id="movie_player"]/div[1]/video');
+        sponsorSegments = await fetchSponsorBlockSegments(videoId);
+        console.log("sponsorSegments:", sponsorSegments);
     }
 
     /**
@@ -183,10 +201,16 @@
      * OBSERVERS
      * =======================
      */
+    function cleanupObservers() {
+        [obs1, obs2, obs3, obs4].forEach(obs => obs?.disconnect());
+        obs1 = obs2 = obs3 = obs4 = null;
+    }
 
     const sourceCode = () => {
+        cleanupObservers();
+
         const condition1 = getElementByXpath('/html/body/ytd-app');
-        if (!condition1 || obs1) return;
+        if (!condition1) return;
 
         obs1 = new MutationObserver(() => {
             const condition2 = getElementByXpath('//*[@id="page-manager"]');
@@ -218,34 +242,29 @@
         });
 
         obs1.observe(condition1, { childList: true, subtree: true });
-    }
-
-    /**
-     * =======================
-     * VIDEO CHANGE HANDLER
-     * =======================
-     */
-
-    async function handleVideoChange() {
-        const videoId = getVideoId();
-        if (!videoId || videoId === lastVideoId) return;
-
-        lastVideoId = videoId;
-        videoElement = getElementByXpath('//*[@id="movie_player"]/div[1]/video');
-        sponsorSegments = await fetchSponsorBlockSegments(videoId);
-        console.log("sponsorSegments:", sponsorSegments);
-    }
+    };
 
     /**
      * =======================
      * INIT
      * =======================
      */
+    function init() {
+        cleanupObservers();
+        sourceCode();
+        handleVideoChange();
+    }
 
-    window.addEventListener("load", sourceCode);
-    document.addEventListener("load", sourceCode);
-    window.addEventListener("locationchange", resetCurrentVideoTime);
+    // Run once on load
+    window.addEventListener("load", init);
+
+    // Handle SPA navigations on YouTube
+    window.addEventListener("yt-navigate-finish", () => {
+        resetCurrentVideoTime();
+        init();
+    });
+
+    // Handle back/forward navigation
     window.addEventListener("popstate", resetCurrentVideoTime);
-    window.addEventListener("yt-navigate-finish", handleVideoChange);
 
 })();

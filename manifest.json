@@ -8,7 +8,6 @@
   "action": {
     "default_title": "YouTube Ad Accelerator",
     "default_popup": "./index.html",
-    "default_locale": "en",
     "default_icon": {
       "16": "icons/icon16.png",
       "32": "icons/icon32.png",
@@ -24,14 +23,15 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://www.youtube.com/*"],
+      "matches": [
+        "https://www.youtube.com/watch*",
+        "https://www.youtube.com/shorts*",
+        "https://www.youtube.com/live*"
+      ],
       "js": ["./src/content_optimised_performance.js"],
       "all_frames": true
     }
   ],
-  "permissions": ["scripting", "tabs", "storage"],
-  "host_permissions": [
-    "https://www.youtube.com/watch?*",
-    "https://sponsor.ajay.app/*"
-  ]
+  "permissions": ["storage"],
+  "host_permissions": ["https://sponsor.ajay.app/*"]
 }
