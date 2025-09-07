@@ -2,7 +2,7 @@
   "name": "YouTube Ad Accelerator — Skip, Mute & Speed Up Ads",
   "short_name": "YouTube Ad Accelerator",
   "description": "Skip, mute & speed up YouTube ads automatically, with optional SponsorBlock integration for sponsor, intro, and outro segments.",
-  "version": "7.1.0",
+  "version": "7.1.1",
   "author": "vatsalya.singhi@gmail.com",
   "manifest_version": 3,
   "action": {
